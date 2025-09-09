@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guess the Number</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: #f4f6f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .game-container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 400px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    p {
+      font-size: 16px;
+      margin: 10px 0;
+      color: #555;
+    }
+
+    input {
+      width: 80px;
+      padding: 10px;
+      font-size: 16px;
+      text-align: center;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-right: 10px;
+    }
+
+    button {
+      padding: 10px 16px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #007bff;
+      color: #fff;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    .message {
+      margin-top: 15px;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .success {
+      color: #28a745;
+    }
+
+    .error {
+      color: #d9534f;
+    }
+
+    .info {
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="game-container">
+    <h1>🎯 Guess the Number</h1>
+    <p>I'm thinking of a number between <b>1</b> and <b>100</b>.</p>
+    <p>Can you guess it?</p>
+
+    <input type="number" id="guessInput" min="1" max="100" placeholder="1-100">
+    <button id="guessBtn">Guess</button>
+
+    <div class="message info" id="message">Start guessing...</div>
+    <p>Attempts left: <span id="attempts">10</span></p>
+    <button id="resetBtn" style="display:none; background:#28a745;">Play Again</button>
+  </div>
+
+  <script>
+    let secretNumber = Math.floor(Math.random() * 100) + 1;
+    let attemptsLeft = 10;
+
+    const guessInput = document.getElementById("guessInput");
+    const guessBtn = document.getElementById("guessBtn");
+    const message = document.getElementById("message");
+    const attempts = document.getElementById("attempts");
+    const resetBtn = document.getElementById("resetBtn");
+
+    guessBtn.addEventListener("click", () => {
+      const userGuess = Number(guessInput.value);
+
+      if (!userGuess || userGuess < 1 || userGuess > 100) {
+        message.textContent = "⚠️ Enter a valid number (1-100)";
+        message.className = "message error";
+        return;
+      }
+
+      attemptsLeft--;
+      attempts.textContent = attemptsLeft;
+
+      if (userGuess === secretNumber) {
+        message.textContent = `🎉 Correct! The number was ${secretNumber}`;
+        message.className = "message success";
+        endGame();
+      } else if (attemptsLeft === 0) {
+        message.textContent = `❌ Game Over! The number was ${secretNumber}`;
+        message.className = "message error";
+        endGame();
+      } else if (userGuess < secretNumber) {
+        message.textContent = "📉 Too low! Try again.";
+        message.className = "message info";
+      } else {
+        message.textContent = "📈 Too high! Try again.";
+        message.className = "message info";
+      }
+
+      guessInput.value = "";
+      guessInput.focus();
+    });
+
+    function endGame() {
+      guessBtn.disabled = true;
+      guessInput.disabled = true;
+      resetBtn.style.display = "inline-block";
+    }
+
+    resetBtn.addEventListener("click", () => {
+      secretNumber = Math.floor(Math.random() * 100) + 1;
+      attemptsLeft = 10;
+      attempts.textContent = attemptsLeft;
+      message.textContent = "Start guessing...";
+      message.className = "message info";
+      guessBtn.disabled = false;
+      guessInput.disabled = false;
+      guessInput.value = "";
+      resetBtn.style.display = "none";
+    });
+  </script>
+
+</body>
+</html>
